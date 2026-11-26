@@ -5,10 +5,16 @@ import {
   Check,
   Code2,
   Copy,
+  Atom,
+  Calculator,
   Cpu,
   Database,
+  FlaskConical,
   GraduationCap,
+  Landmark,
   Languages,
+  ListOrdered,
+  Microscope,
   Menu,
   Network,
   Pencil,
@@ -16,6 +22,7 @@ import {
   Search,
   Send,
   Sparkles,
+  Target,
   Terminal,
   Trash2,
   Volume2,
@@ -26,7 +33,7 @@ import {
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { api } from './api'
-import type { Conversation, Language, TeachingMode, User } from './types'
+import type { Conversation, Language, LearningMode, TeachingMode, User } from './types'
 
 const languageLabels: Record<Language, string> = {
   en: 'English',
@@ -87,14 +94,104 @@ const subjectsList = [
       { text: 'Compare Dijkstra algorithm and Bellman-Ford shortest path', lang: 'en' as Language },
     ],
   },
+  {
+    id: 'Mathematics',
+    name: 'Mathematics',
+    short: 'MATH',
+    icon: Calculator,
+    description: 'Algebra, calculus, geometry, statistics, and problem-solving.',
+    starters: [
+      { text: 'Explain derivatives using a simple real-world example', lang: 'en' as Language },
+      { text: 'Help me solve a quadratic equation step by step', lang: 'en' as Language },
+      { text: 'સરેરાશ, મધ્યક અને બહુલક વચ્ચેનો તફાવત સમજાવો', lang: 'gu' as Language },
+    ],
+  },
+  {
+    id: 'Physics',
+    name: 'Physics',
+    short: 'PHYS',
+    icon: Atom,
+    description: 'Motion, forces, energy, electricity, and waves.',
+    starters: [
+      { text: 'Explain Newton’s second law with a everyday example', lang: 'en' as Language },
+      { text: 'વિદ્યુત પ્રવાહ અને વોલ્ટેજ વચ્ચેનો તફાવત સમજાવો', lang: 'gu' as Language },
+      { text: 'ऊर्जा संरक्षण का नियम सरल उदाहरण से समझाइए', lang: 'hi' as Language },
+    ],
+  },
+  {
+    id: 'Chemistry',
+    name: 'Chemistry',
+    short: 'CHEM',
+    icon: FlaskConical,
+    description: 'Atoms, reactions, the periodic table, and chemical bonds.',
+    starters: [
+      { text: 'Explain ionic and covalent bonds with examples', lang: 'en' as Language },
+      { text: 'પરમાણુ અને અણુ વચ્ચે શું તફાવત છે?', lang: 'gu' as Language },
+      { text: 'रासायनिक समीकरणों को संतुलित करना समझाइए', lang: 'hi' as Language },
+    ],
+  },
+  {
+    id: 'Biology',
+    name: 'Biology',
+    short: 'BIO',
+    icon: Microscope,
+    description: 'Cells, genetics, ecosystems, and the human body.',
+    starters: [
+      { text: 'Explain how photosynthesis works, step by step', lang: 'en' as Language },
+      { text: 'કોષના મુખ્ય ભાગો અને તેમનાં કાર્યો સમજાવો', lang: 'gu' as Language },
+      { text: 'डीएनए और जीन में क्या अंतर है?', lang: 'hi' as Language },
+    ],
+  },
+  {
+    id: 'English',
+    name: 'English',
+    short: 'ENG',
+    icon: BookOpen,
+    description: 'Grammar, writing, reading comprehension, and vocabulary.',
+    starters: [
+      { text: 'Explain the difference between affect and effect', lang: 'en' as Language },
+      { text: 'Help me improve this paragraph and explain the edits', lang: 'en' as Language },
+      { text: 'ગુજરાતી ઉદાહરણો સાથે અંગ્રેજી કાળ સમજાવો', lang: 'gu' as Language },
+    ],
+  },
+  {
+    id: 'History',
+    name: 'History',
+    short: 'HIST',
+    icon: Landmark,
+    description: 'People, events, timelines, and the causes behind them.',
+    starters: [
+      { text: 'Explain the causes and effects of the Industrial Revolution', lang: 'en' as Language },
+      { text: 'ભારતની સ્વતંત્રતા ચળવળની મુખ્ય ઘટનાઓ સમજાવો', lang: 'gu' as Language },
+      { text: 'सिंधु घाटी सभ्यता की प्रमुख विशेषताएँ क्या थीं?', lang: 'hi' as Language },
+    ],
+  },
+  {
+    id: 'Economics',
+    name: 'Economics',
+    short: 'ECON',
+    icon: Network,
+    description: 'Markets, money, trade, supply and demand, and public policy.',
+    starters: [
+      { text: 'Explain supply and demand with a local market example', lang: 'en' as Language },
+      { text: 'ફુગાવો શું છે અને તે ખરીદશક્તિને કેવી રીતે અસર કરે છે?', lang: 'gu' as Language },
+      { text: 'मांग और आपूर्ति का संतुलन आसान उदाहरण से समझाइए', lang: 'hi' as Language },
+    ],
+  },
 ]
 
-const teachingModes: { id: TeachingMode; label: string; icon: string; desc: string }[] = [
-  { id: 'beginner', label: 'Beginner', icon: '🎓', desc: 'Analogies & simple everyday terms' },
-  { id: 'step-by-step', label: 'Step-by-Step', icon: '📐', desc: 'Procedural structured breakdowns' },
-  { id: 'intermediate', label: 'Standard', icon: '⚡', desc: 'Technical definitions & models' },
-  { id: 'advanced', label: 'Exam Prep', icon: '🔬', desc: 'Formal rigor, edge cases & proofs' },
+const regularStarters = [
+  'Explain a difficult idea in simple terms',
+  'Help me solve a problem step by step',
+  'Compare two concepts with a practical example',
 ]
+
+const teachingModes = [
+  { id: 'beginner', label: 'Beginner', icon: GraduationCap, desc: 'Analogies & simple everyday terms' },
+  { id: 'step-by-step', label: 'Step-by-Step', icon: ListOrdered, desc: 'Procedural structured breakdowns' },
+  { id: 'intermediate', label: 'Standard', icon: BookOpen, desc: 'Technical definitions & models' },
+  { id: 'advanced', label: 'Exam Prep', icon: Target, desc: 'Formal rigor, edge cases & proofs' },
+] satisfies { id: TeachingMode; label: string; icon: typeof GraduationCap; desc: string }[]
 
 export default function App() {
   const [user, setUser] = useState<User | null>(null)
@@ -135,6 +232,8 @@ function TutorApp({ user }: { user: User }) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [conversation, setConversation] = useState<Conversation | null>(null)
   const [language, setLanguage] = useState<Language>(user.preferredLanguage)
+  const [learningMode, setLearningMode] = useState<LearningMode>('regular')
+  const [selectedSubject, setSelectedSubject] = useState('DBMS')
   const [teachingMode, setTeachingMode] = useState<TeachingMode>('beginner')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -184,6 +283,9 @@ function TutorApp({ user }: { user: User }) {
     api.getConversation(activeId)
       .then((result) => {
         setConversation(result.conversation)
+        const mode = result.conversation.mode ?? (result.conversation.subject === 'General' ? 'regular' : 'specialized')
+        setLearningMode(mode)
+        if (mode === 'specialized') setSelectedSubject(result.conversation.subject)
         if (result.conversation.language) {
           setLanguage(result.conversation.language)
         }
@@ -205,19 +307,27 @@ function TutorApp({ user }: { user: User }) {
     setSpeakingMessageId(null)
   }, [activeId])
 
-  async function createNewConversation(subject: string = 'DBMS', customLanguage?: Language) {
+  async function createNewConversation(
+    mode: LearningMode = learningMode,
+    subject: string = selectedSubject,
+    customLanguage?: Language,
+  ) {
     setLoading(true)
     setError('')
     try {
       const targetLang = customLanguage ?? language
       const result = await api.createConversation({
         language: targetLang,
-        subject,
+        mode,
+        subject: mode === 'regular' ? 'General' : subject,
         title: 'New learning conversation',
       })
       setConversations((current) => [result.conversation, ...current])
+      setConversation(result.conversation)
       setActiveId(result.conversation.id)
       setLanguage(targetLang)
+      setLearningMode(mode)
+      setSelectedSubject(subject)
       setMenuOpen(false)
       setShowNewModal(false)
     } catch (caught) {
@@ -271,7 +381,7 @@ function TutorApp({ user }: { user: User }) {
     }
   }
 
-  async function handleSendQuestion(questionText: string) {
+  async function handleSendQuestion(questionText: string, preferredLanguage?: Language) {
     const question = questionText.trim()
     if (!question || loading) return
 
@@ -282,13 +392,16 @@ function TutorApp({ user }: { user: User }) {
       setLoading(true)
       try {
         const result = await api.createConversation({
-          language,
-          subject: 'DBMS',
+          language: preferredLanguage ?? language,
+          mode: learningMode,
+          subject: learningMode === 'regular' ? 'General' : selectedSubject,
           title: question.slice(0, 50),
         })
         currentActiveId = result.conversation.id
+        setConversation(result.conversation)
         setActiveId(currentActiveId)
         setConversations((prev) => [result.conversation, ...prev])
+        if (preferredLanguage) setLanguage(preferredLanguage)
       } catch (caught) {
         setError(caught instanceof Error ? caught.message : 'Failed to initialize session.')
         setLoading(false)
@@ -366,7 +479,11 @@ function TutorApp({ user }: { user: User }) {
       c.subject.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const activeSubject = conversation?.subject ?? 'DBMS'
+  const activeMode = conversation
+    ? conversation.mode ?? (conversation.subject === 'General' ? 'regular' : 'specialized')
+    : learningMode
+  const activeSubject = activeMode === 'regular' ? 'Any subject' : conversation?.subject ?? selectedSubject
+  const selectedSubjectDetails = subjectsList.find((subject) => subject.id === selectedSubject)
 
   return (
     <main className="app-shell">
@@ -401,7 +518,7 @@ function TutorApp({ user }: { user: User }) {
 
         <button
           className="new-chat"
-          onClick={() => void createNewConversation('DBMS')}
+          onClick={() => setShowNewModal(true)}
           disabled={loading}
           aria-label="Start a new conversation"
         >
@@ -474,13 +591,18 @@ function TutorApp({ user }: { user: User }) {
               <button
                 className="history-item"
                 onClick={() => {
+                  setConversation(null)
                   setActiveId(item.id)
                   setMenuOpen(false)
                 }}
               >
                 <span className="history-item-title">{item.title}</span>
                 <div className="history-item-meta">
-                  <span className="history-pill">{item.subject}</span>
+                  <span className="history-pill">
+                    {(item.mode ?? (item.subject === 'General' ? 'regular' : 'specialized')) === 'regular'
+                      ? 'Regular'
+                      : item.subject}
+                  </span>
                   <span className="history-pill lang">{item.language.toUpperCase()}</span>
                 </div>
               </button>
@@ -533,7 +655,9 @@ function TutorApp({ user }: { user: User }) {
             <div className="workspace-title-box">
               <div className="subject-badge">
                 <span className="subject-dot" />
-                <span>{activeSubject}</span>
+                <span title={activeMode === 'regular' ? 'Regular · Any subject' : `Specialized · ${activeSubject}`}>
+                  {activeMode === 'regular' ? 'Regular · Any subject' : `Specialized · ${activeSubject}`}
+                </span>
               </div>
               {conversation && (
                 <span className="conversation-title-text" title={conversation.title}>
@@ -555,7 +679,7 @@ function TutorApp({ user }: { user: User }) {
                   className={`mode-btn ${teachingMode === mode.id ? 'active' : ''}`}
                   onClick={() => setTeachingMode(mode.id)}
                 >
-                  <span>{mode.icon}</span>
+                  <span><mode.icon size={13} aria-hidden="true" /></span>
                   <span>{mode.label}</span>
                 </button>
               ))}
@@ -586,62 +710,72 @@ function TutorApp({ user }: { user: User }) {
         <div className="chat-area">
           {!conversation ? (
             <div className="welcome-container">
-              <div className="welcome-badge">
-                <Sparkles size={14} />
-                <span>Quiet Academic Multilingual AI Tutor</span>
-              </div>
-
-              <h1 className="welcome-title">What would you like to understand?</h1>
+              <h1 className="welcome-title">What would you like to learn?</h1>
               <p className="welcome-desc">
-                Learn core Computer Science and Engineering subjects in English, Gujarati, or Hindi
-                with step-by-step conceptual rigor and real-world clarity.
+                Ask freely, or choose a subject and keep every explanation focused on it.
               </p>
 
-              {/* Subject Catalog Cards */}
-              <div className="subject-grid">
-                {subjectsList.map((subject) => {
-                  const Icon = subject.icon
-                  return (
-                    <div
-                      key={subject.id}
-                      className="subject-card"
-                      onClick={() => void createNewConversation(subject.id)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          void createNewConversation(subject.id)
-                        }
-                      }}
-                    >
-                      <div className="subject-card-header">
-                        <div className="subject-card-icon">
-                          <Icon size={18} />
-                        </div>
-                        <span className="subject-card-badge">{subject.short}</span>
-                      </div>
-                      <h2 className="subject-card-title">{subject.name}</h2>
-                      <p className="subject-card-sample">{subject.description}</p>
-                    </div>
-                  )
-                })}
+              <div className="learning-mode-picker" role="group" aria-label="Choose learning mode">
+                <button
+                  type="button"
+                  className={`learning-mode-option ${learningMode === 'regular' ? 'active' : ''}`}
+                  aria-pressed={learningMode === 'regular'}
+                  onClick={() => setLearningMode('regular')}
+                >
+                  <span className="learning-mode-icon"><Sparkles size={19} /></span>
+                  <span className="learning-mode-copy">
+                    <strong>Regular mode</strong>
+                    <small>Ask about anything, across subjects.</small>
+                  </span>
+                  <span className="learning-mode-check" aria-hidden="true">{learningMode === 'regular' ? <Check size={16} /> : null}</span>
+                </button>
+                <button
+                  type="button"
+                  className={`learning-mode-option ${learningMode === 'specialized' ? 'active' : ''}`}
+                  aria-pressed={learningMode === 'specialized'}
+                  onClick={() => setLearningMode('specialized')}
+                >
+                  <span className="learning-mode-icon"><BookOpen size={19} /></span>
+                  <span className="learning-mode-copy">
+                    <strong>Specialized mode</strong>
+                    <small>Choose one subject for focused answers.</small>
+                  </span>
+                  <span className="learning-mode-check" aria-hidden="true">{learningMode === 'specialized' ? <Check size={16} /> : null}</span>
+                </button>
               </div>
 
-              {/* Curated Prompt Starters */}
+              {learningMode === 'specialized' ? (
+                <div className="subject-picker">
+                  <label htmlFor="subject-select">Your subject</label>
+                  <select
+                    id="subject-select"
+                    value={selectedSubject}
+                    onChange={(event) => setSelectedSubject(event.target.value)}
+                  >
+                    {subjectsList.map((subject) => (
+                      <option key={subject.id} value={subject.id}>{subject.name}</option>
+                    ))}
+                  </select>
+                  {selectedSubjectDetails && <p>{selectedSubjectDetails.description}</p>}
+                  <p className="scope-note">Answers will stay focused on {selectedSubject}.</p>
+                </div>
+              ) : (
+                <p className="mode-note">From homework help to everyday curiosity, start with any question.</p>
+              )}
+
               <div className="quick-starters-section">
-                <div className="quick-starters-title">Featured High-Yield Inquiries</div>
+                <div className="quick-starters-title">
+                  {learningMode === 'regular' ? 'Try asking' : `Start with ${selectedSubject}`}
+                </div>
                 <div className="starter-pills-wrap">
-                  {subjectsList
-                    .flatMap((s) => s.starters)
-                    .slice(0, 6)
-                    .map((starter, index) => (
+                  {(learningMode === 'regular'
+                    ? regularStarters.map((text) => ({ text, lang: language }))
+                    : selectedSubjectDetails?.starters ?? []
+                  ).slice(0, 3).map((starter) => (
                       <button
-                        key={index}
+                        key={starter.text}
                         className="starter-pill"
-                        onClick={() => {
-                          setLanguage(starter.lang)
-                          void handleSendQuestion(starter.text)
-                        }}
+                        onClick={() => void handleSendQuestion(starter.text, starter.lang)}
                       >
                         <Terminal size={13} />
                         <span>{starter.text}</span>
@@ -751,8 +885,12 @@ function TutorApp({ user }: { user: User }) {
                   <div className="empty-thread-icon">
                     <BookOpen size={26} />
                   </div>
-                  <h2>Ask your first {activeSubject} question</h2>
-                  <p>Try “Explain normalisation with a simple student example.”</p>
+                  <h2>{activeMode === 'regular' ? 'Ask anything to get started' : `Ask your first ${activeSubject} question`}</h2>
+                  <p>
+                    {activeMode === 'regular'
+                      ? 'Choose any topic and we’ll work through it together.'
+                      : selectedSubjectDetails?.starters[0]?.text ?? `Ask a question about ${activeSubject}.`}
+                  </p>
                 </div>
               )}
 
@@ -786,7 +924,11 @@ function TutorApp({ user }: { user: User }) {
               ref={textareaRef}
               rows={2}
               maxLength={4000}
-              placeholder={`Ask any ${activeSubject} question in ${languageLabels[language]}...`}
+              placeholder={
+                activeMode === 'specialized'
+                  ? `Ask a ${activeSubject} question in ${languageLabels[language]}...`
+                  : `Ask anything in ${languageLabels[language]}...`
+              }
               disabled={loading}
               onKeyDown={handleKeyDown}
               className="composer-textarea"
@@ -833,11 +975,12 @@ function TutorApp({ user }: { user: User }) {
         {/* New Session Customization Modal */}
         {showNewModal && (
           <NewSessionModal
+            initialMode={learningMode}
             initialSubject={activeSubject}
             initialLanguage={language}
             onClose={() => setShowNewModal(false)}
-            onCreate={(subject, lang) => {
-              void createNewConversation(subject, lang)
+            onCreate={(mode, subject, lang) => {
+              void createNewConversation(mode, subject, lang)
             }}
           />
         )}
@@ -898,47 +1041,51 @@ function CodeBlock({ children }: { children?: React.ReactNode }) {
 }
 
 function NewSessionModal({
+  initialMode,
   initialSubject,
   initialLanguage,
   onClose,
   onCreate,
 }: {
+  initialMode: LearningMode
   initialSubject: string
   initialLanguage: Language
   onClose: () => void
-  onCreate: (subject: string, language: Language) => void
+  onCreate: (mode: LearningMode, subject: string, language: Language) => void
 }) {
-  const [subject, setSubject] = useState(initialSubject)
+  const [mode, setMode] = useState<LearningMode>(initialMode)
+  const [subject, setSubject] = useState(subjectsList.some((item) => item.id === initialSubject) ? initialSubject : 'DBMS')
   const [lang, setLang] = useState<Language>(initialLanguage)
 
   return (
-    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
+    <div className="modal-overlay" onClick={onClose} role="dialog" aria-modal="true" aria-labelledby="new-session-title">
       <div className="modal-card" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h3>Start New Study Session</h3>
+          <h3 id="new-session-title">Set up a study session</h3>
           <button className="modal-close-btn" onClick={onClose} aria-label="Close dialog">
             <X size={18} />
           </button>
         </div>
 
         <div className="modal-field">
-          <label htmlFor="session-subject">Choose Subject</label>
-          <select
-            id="session-subject"
-            value={subject}
-            onChange={(e) => setSubject(e.target.value)}
-          >
-            {subjectsList.map((s) => (
-              <option key={s.id} value={s.id}>
-                {s.name} ({s.short})
-              </option>
-            ))}
-            <option value="Computer Science">Other Computer Science Topic</option>
-          </select>
+          <span className="modal-label">Learning mode</span>
+          <div className="modal-mode-picker" role="group" aria-label="Choose learning mode">
+            <button type="button" className={mode === 'regular' ? 'active' : ''} aria-pressed={mode === 'regular'} onClick={() => setMode('regular')}>Regular</button>
+            <button type="button" className={mode === 'specialized' ? 'active' : ''} aria-pressed={mode === 'specialized'} onClick={() => setMode('specialized')}>Specialized</button>
+          </div>
         </div>
 
+        {mode === 'specialized' && (
+          <div className="modal-field">
+            <label htmlFor="session-subject">Subject</label>
+            <select id="session-subject" value={subject} onChange={(e) => setSubject(e.target.value)}>
+              {subjectsList.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+            </select>
+          </div>
+        )}
+
         <div className="modal-field">
-          <label htmlFor="session-language">Instruction Language</label>
+          <label htmlFor="session-language">Response language</label>
           <select
             id="session-language"
             value={lang}
@@ -959,10 +1106,10 @@ function NewSessionModal({
           <button
             className="btn-primary"
             onClick={() => {
-              onCreate(subject, lang)
+              onCreate(mode, subject, lang)
             }}
           >
-            Begin Session
+            Start learning
           </button>
         </div>
       </div>

@@ -31,4 +31,7 @@
 - [ ] Responsive UI review
 - [x] Guest-first responsive review
 - [x] Full responsive Playwright matrix
+- [x] Specialized subject validation and AI prompt tests
 - [x] Verify guest conversation history survives reload
+- [x] Add Regular and Specialized learning modes with subject-scoped AI guidance.
+- [x] Redesign the tutor start screen and validate responsive mode selection.

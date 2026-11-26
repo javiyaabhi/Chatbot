@@ -7,10 +7,34 @@ import { getTutorResponse } from "../services/ai.js";
 export const conversationRouter = Router();
 conversationRouter.use(requireAuth);
 
+const allowedSubjects = [
+  "General",
+  "DBMS",
+  "Operating Systems",
+  "Computer Networks",
+  "DSA",
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "English",
+  "History",
+  "Economics",
+  "Computer Science",
+] as const;
+
 const createSchema = z.object({
   title: z.string().trim().min(1).max(120).optional(),
-  subject: z.string().trim().min(1).max(80).default("General"),
+  mode: z.enum(["regular", "specialized"]).default("regular"),
+  subject: z.enum(allowedSubjects).optional(),
   language: z.enum(["en", "hi", "gu"]).default("gu"),
+}).superRefine((data, context) => {
+  if (data.mode === "specialized" && !data.subject) {
+    context.addIssue({ code: "custom", path: ["subject"], message: "Choose a subject for specialized mode." });
+  }
+  if (data.mode === "regular" && data.subject && data.subject !== "General") {
+    context.addIssue({ code: "custom", path: ["subject"], message: "Regular mode does not use a subject restriction." });
+  }
 });
 
 const messageSchema = z.object({
@@ -33,7 +57,8 @@ conversationRouter.post("/", (req: AuthRequest, res) => {
     id: crypto.randomUUID(),
     userId: req.userId!,
     title: parsed.data.title ?? "New learning conversation",
-    subject: parsed.data.subject,
+    mode: parsed.data.mode,
+    subject: parsed.data.mode === "regular" ? "General" : parsed.data.subject ?? "General",
     language: parsed.data.language,
     messages: [],
     createdAt: now,
@@ -70,7 +95,7 @@ conversationRouter.patch("/:id", (req: AuthRequest, res) => {
   if (!conversation || conversation.userId !== req.userId) return res.status(404).json({ error: "Conversation not found." });
   const parsed = z.object({
     title: z.string().trim().min(1).max(120).optional(),
-    subject: z.string().trim().min(1).max(80).optional(),
+    subject: z.enum(allowedSubjects).optional(),
   }).safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: "Invalid updates." });
   if (parsed.data.title) conversation.title = parsed.data.title;
@@ -102,6 +127,8 @@ conversationRouter.post("/:id/messages", async (req: AuthRequest, res) => {
     question: parsed.data.question,
     language: conversation.language,
     teachingMode: parsed.data.teachingMode,
+    learningMode: conversation.mode ?? (conversation.subject === "General" ? "regular" : "specialized"),
+    subject: conversation.subject,
   });
   conversation.messages.push({ id: crypto.randomUUID(), role: "assistant", content: answer.content, createdAt: new Date().toISOString() });
   conversation.updatedAt = new Date().toISOString();

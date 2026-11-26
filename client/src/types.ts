@@ -1,5 +1,6 @@
 export type Language = 'en' | 'hi' | 'gu'
 export type TeachingMode = 'beginner' | 'intermediate' | 'advanced' | 'step-by-step'
+export type LearningMode = 'regular' | 'specialized'
 
 export interface User {
   id: string
@@ -19,6 +20,7 @@ export interface Message {
 export interface Conversation {
   id: string
   title: string
+  mode: LearningMode
   subject: string
   language: Language
   messages: Message[]

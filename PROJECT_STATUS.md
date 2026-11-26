@@ -36,7 +36,10 @@ Guest-first tutor experience is active; MongoDB-backed conversation persistence 
 - Started the client at http://127.0.0.1:5173 and the API at http://localhost:4000.
 - Executed comprehensive UI/UX overhaul researched from `ui-ux-pro-max`, `frontend-design`, `emil-design-eng`, `make-interfaces-feel-better`, and `web-design-guidelines`.
 - Implemented deep academic color system, Google Fonts integration (Plus Jakarta Sans, Noto Sans Gujarati/Devanagari, JetBrains Mono, Newsreader), and layered elevation shadows.
-- Added multi-subject catalog (DBMS, OS, Computer Networks, DSA) with bilingual high-yield question starters.
+- Added Regular and Specialized learning modes with a broad subject catalog and relevant question starters.
+- Restricted specialized AI prompts to the selected, server-validated subject; regular mode allows cross-subject questions.
+- Redesigned the first-run workspace around clear mode selection, subject context, and responsive question starters.
+- Added server prompt tests and browser coverage for mode selection, subject validation, persistence, and responsive layouts.
 - Added interactive 4-tier Teaching Mode selector (Beginner, Step-by-Step, Standard, Exam Prep).
 - Integrated rich code block rendering with language detection and one-click copy feedback.
 - Added Web Speech API text-to-speech reading for Gujarati, Hindi, and English.

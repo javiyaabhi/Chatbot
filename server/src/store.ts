@@ -20,6 +20,7 @@ export interface Conversation {
   id: string;
   userId: string;
   title: string;
+  mode: "regular" | "specialized";
   subject: string;
   language: "en" | "hi" | "gu";
   messages: Message[];
