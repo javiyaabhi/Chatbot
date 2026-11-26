@@ -1,0 +1,14 @@
+node_modules/
+dist/
+client/dist/
+server/dist/
+client/test-results/
+cookies.txt
+*.log
+
+.env
+.env.*
+!.env.example
+server/.env
+server/.env.*
+!server/.env.example
