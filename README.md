@@ -79,8 +79,8 @@ npm run test:e2e --prefix client
 
 ## Deploy to Render
 
-The repository includes a Render Blueprint in [`render.yaml`](./render.yaml). In Render, create a new Blueprint deployment from this repository and provide the requested `GEMINI_API_KEY` and `MONGODB_URI` values. The Blueprint generates `JWT_SECRET` and configures the build and start commands.
+The repository includes a Render Blueprint in [`render.yaml`](./render.yaml). In Render, create a new Blueprint deployment from this repository and provide the requested `GEMINI_API_KEY`. The Blueprint generates `JWT_SECRET` and configures the build and start commands. MongoDB is not required for this deployment.
 
-**Persistence note:** MongoDB is connected when `MONGODB_URI` is set, but the current user and conversation stores are in memory. Data is therefore not persisted to MongoDB yet and can be lost when the service restarts or redeploys.
+**Persistence note:** The current user and conversation stores are in memory, so data can be lost when the service restarts or redeploys. MongoDB persistence is not implemented yet.
 
 The API health endpoint is `/api/health`.
